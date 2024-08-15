@@ -24,8 +24,29 @@ describe('calculator',()=>{
 
     describe('custom-seperator', ()=> {
         checkResult("//;\n1;2", 3);
+
         describe('..can be any length', ()=> {
             checkResult("//foo\n1foo2foo3", 6);
+        })
+
+        describe('multiple custom delimiters are allowed', ()=> {
+            checkResult("//[*][%]\n1*2%3", 6);
+            describe('...it can be multiple characters', ()=> {
+                checkResult("//[foo][bar]\n1foo2bar3", 6);
+                describe('...parsing multiple multi-character delimiters', () => {
+                    let resultinDelimiters: any;
+                    beforeAll(()=>{
+                        resultinDelimiters = calculator.getCustomDelimiter("//[foo][bar]\n1");
+                    })
+                    it('should extract foo', ()=> {
+                        expect(resultinDelimiters[0]).toBe('foo');
+                    })
+
+                    it('should extract bar', ()=> {
+                        expect(resultinDelimiters[1]).toBe('bar');
+                    })
+                })
+            })
         })
     })
     

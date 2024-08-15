@@ -3,6 +3,7 @@ export let calculator = {
         let expNumbArr;
         if(expression.includes(',') || expression.includes('\n')) {
             expNumbArr = this.getPieceValues(expression);
+            this.checkValidity(expNumbArr);
             return this.sum(expNumbArr);
         }
         else {
@@ -12,7 +13,7 @@ export let calculator = {
     getPieceValues : function(expression: any) {
         let delimiters = [",", "\n"]
         if(this.hasCustomDelimiter(expression)) {
-            delimiters.push(this.getCustomDelimiter(expression));
+            delimiters = delimiters.concat(this.getCustomDelimiter(expression));
             expression = this.stripFirstLine(expression);
         }
         let pieces = this.getSubPieces([expression], delimiters);
@@ -28,7 +29,7 @@ export let calculator = {
     getCustomDelimiter: function(expression: any) {
        let delimiterSpec =  expression.split('\n')[0].substring(2);
        if(/^\[.+\]/.test(delimiterSpec)) {
-        return delimiterSpec.substring(1, delimiterSpec.length - 2).split('][');
+        return delimiterSpec.substring(1, delimiterSpec.length - 1).split("][");
        }else {
         return [delimiterSpec];
        }
@@ -56,7 +57,7 @@ export let calculator = {
                 negatives.push(piecesValues[i]);
             }
         }
-        if(negatives.length)
+        if(negatives?.length)
             throw "negative numbers not allowed" + negatives.join(', ')
     },
     sum: function(numbArr: any[]) {
