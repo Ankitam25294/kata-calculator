@@ -24,21 +24,31 @@ describe('calculator',()=>{
 
     describe('custom-seperator', ()=> {
         checkResult("//;\n1;2", 3);
-    })
-
-
-    describe('negative numbers', ()=> {
-        let expression = "1,2,3,-4";
-
-        it(`add function should throw an exception for negative numbers like ${expression}`, ()=>{
-            let expNumbArr = calculator.resolveExpression(expression);
-            expect(calculator.sum(expNumbArr)).toStrictEqual(new Error('negative numbers not allowed'));
+        describe('..can be any length', ()=> {
+            checkResult("//foo\n1foo2foo3", 6);
         })
     })
-
+    
     function checkResult(expression: string, result: number) {
         it(`should evaluate add function ${expression} to ${result}`, ()=>{
             expect(calculator.add(expression)).toBe(result);
         })
     }
+
+    describe('negative numbers are not allowed', ()=> {
+        let expression = "1,2,3,-4";
+        it(`add function should throw an exception for negative numbers like ${expression}`, ()=>{
+            let expNumbArr = calculator.getPieceValues(expression);
+            expect(calculator.sum(expNumbArr)).toStrictEqual(new Error('negative numbers or number greater than 1000 not allowed'));
+        })
+    })
+
+    describe('numbers greater than 1000 are not allowed', ()=> {
+        let expression = "1001,2";
+        it('add function should throw an exception', ()=>{
+            let expNumbArr = calculator.getPieceValues(expression);
+            expect(calculator.sum(expNumbArr)).toStrictEqual(new Error('negative numbers or number greater than 1000 not allowed'));
+        })
+    })
+
 })

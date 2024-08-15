@@ -2,26 +2,36 @@ export let calculator = {
     add : function(expression: any) {
         let expNumbArr;
         if(expression.includes(',') || expression.includes('\n')) {
-            expNumbArr = this.resolveExpression(expression);
+            expNumbArr = this.getPieceValues(expression);
             return this.sum(expNumbArr);
         }
         else {
             return parseInt(expression || 0)
         }
     },
-    resolveExpression : function(expression: any) {
+    getPieceValues : function(expression: any) {
         let delimiters = [",", "\n"]
         if(this.hasCustomDelimiter(expression)) {
             delimiters.push(this.getCustomDelimiter(expression));
             expression = this.stripFirstLine(expression);
         }
-        return this.getSubPieces([expression], delimiters);
+        let pieces = this.getSubPieces([expression], delimiters);
+        let piecesValues = [];
+        for(let i=0;i<pieces.length;i++) {
+            piecesValues.push(parseInt(pieces[i]))
+        }
+        return piecesValues;
     },
     hasCustomDelimiter: function(expression: any) {
         return /^\/\//.test(expression);
     },
     getCustomDelimiter: function(expression: any) {
-        return expression.charAt(2);
+       let delimiterSpec =  expression.split('\n')[0].substring(2);
+       if(/^\[.+\]/.test(delimiterSpec)) {
+        return delimiterSpec.substring(1, delimiterSpec.length - 2).split('][');
+       }else {
+        return [delimiterSpec];
+       }
     },
     stripFirstLine: function(expression: any) {
         return expression.substring(expression.indexOf('\n') + 1)
@@ -39,15 +49,25 @@ export let calculator = {
         return this.getSubPieces(subPieces, delimiters);
 
     },
-    sum: function(numbArr: string[]) {
+    checkValidity: function(piecesValues: any) {
+        let negatives : number[];
+        for(let i=0;i<piecesValues.length;i++) {
+            if(parseInt(piecesValues[i]) < 0 ) {
+                negatives.push(piecesValues[i]);
+            }
+        }
+        if(negatives.length)
+            throw "negative numbers not allowed" + negatives.join(', ')
+    },
+    sum: function(numbArr: any[]) {
         let sum = 0;
         try {
             for (let i = 0; i < numbArr.length; i++ ) {
                 let curNum = parseInt(numbArr[i]);
-                if(curNum > 0) {
+                if(curNum > 0 && curNum <=1000) {
                     sum += curNum;
                 }else {
-                    throw new Error('negative numbers not allowed');
+                    throw new Error('negative numbers or number greater than 1000 not allowed');
                 }
               } 
             return sum;
