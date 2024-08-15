@@ -13,6 +13,11 @@ describe('calculator',()=>{
         checkResult("150,250,500,1000", 1900);
     })
 
+    describe('newline-seperator', ()=> {
+        checkResult("1\n2", 3);
+        checkResult("1\n2\n3\n4\n5", 15);
+    })
+
     describe('negative numbers', ()=> {
         let expression = "1,2,3,-4";
 

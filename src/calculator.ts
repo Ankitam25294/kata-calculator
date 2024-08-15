@@ -1,7 +1,7 @@
 export let calculator = {
     add : function(expression: any) {
         let expNumbArr;
-        if(expression.includes(',')) {
+        if(expression.includes(',') || expression.includes('\n')) {
             expNumbArr = this.resolveExpression(expression);
             return this.sum(expNumbArr);
         }
@@ -10,7 +10,9 @@ export let calculator = {
         }
     },
     resolveExpression : function(expression: any) {
-        let expNumbArr =  expression.split(',');
+        let delimiters = [",", "\n"]
+        let expNumbArr =  expression.split(/,|\n/g);
+        console.log(expNumbArr)
         return expNumbArr;
     },
     sum: function(numbArr: string[]) {
