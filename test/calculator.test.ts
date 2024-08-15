@@ -18,6 +18,15 @@ describe('calculator',()=>{
         checkResult("1\n2\n3\n4\n5", 15);
     })
 
+    describe('mixed-seperator', ()=> {
+        checkResult("1\n2,3\n4,5", 15);
+    })
+
+    describe('custom-seperator', ()=> {
+        checkResult("//;\n1;2", 3);
+    })
+
+
     describe('negative numbers', ()=> {
         let expression = "1,2,3,-4";
 
